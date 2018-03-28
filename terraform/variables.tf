@@ -14,10 +14,6 @@ variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
 }
 
-variable "private_key_path" {
-  description = "Path to SSH private key corresponding to the public key in public_key_path"
-}
-
 variable "cert_owner" {
   description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
 }

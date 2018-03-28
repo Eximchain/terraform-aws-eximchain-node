@@ -1,5 +1,4 @@
 public_key_path                    = "~/.ssh/eximchain-node.pub"
-private_key_path                   = "~/.ssh/eximchain-node"
 aws_region                         = "us-east-1"
 cert_owner                         = "FIXME_USER"
 force_destroy_s3_buckets           = true
