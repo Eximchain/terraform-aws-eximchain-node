@@ -147,6 +147,14 @@ resource "aws_iam_role_policy_attachment" "allow_s3_bucket" {
   policy_arn = "${aws_iam_policy.allow_s3_bucket.arn}"
 }
 
+# Only attach policy if using external vault
+resource "aws_iam_role_policy_attachment" "vault_cert_access" {
+  count = "${var.vault_cert_access_policy_arn == "" ? 0 : 1}"
+
+  role       = "${aws_iam_role.eximchain_node.name}"
+  policy_arn = "${var.vault_cert_access_policy_arn}"
+}
+
 module "consul_iam_policies_servers" {
   source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
 
@@ -276,8 +284,9 @@ data "template_file" "user_data_eximchain_node" {
     aws_region = "${var.aws_region}"
     s3_bucket_name = "${aws_s3_bucket.vault_storage.id}"
 
-    vault_dns  = "${var.vault_dns}"
-    vault_port = "${var.vault_port}"
+    vault_dns         = "${var.vault_dns}"
+    vault_port        = "${var.vault_port}"
+    vault_cert_bucket = "${var.vault_cert_bucket}"
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"

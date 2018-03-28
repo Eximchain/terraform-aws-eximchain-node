@@ -36,6 +36,16 @@ variable "vault_dns" {
   default     = "127.0.0.1"
 }
 
+variable "vault_cert_access_policy_arn" {
+  description = "The ARN of the policy that allows access to the S3 bucket containing vault certificates. Leave empty if using a local vault."
+  default     = ""
+}
+
+variable "vault_cert_bucket" {
+  description = "The name of the S3 bucket containing vault certificates. Leave empty if using a local vault."
+  default     = ""
+}
+
 variable "vault_port" {
   description = "The port that vault will be accessible on."
   default     = 8200
