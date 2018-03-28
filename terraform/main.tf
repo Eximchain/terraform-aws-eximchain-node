@@ -119,7 +119,7 @@ EOF
 }
 
 resource "aws_iam_policy" "allow_s3_bucket" {
-  name        = "allow_aws_auth"
+  name        = "eximchain_allow_s3_bucket_net_${var.network_id}"
   description = "Allow authentication to vault by AWS mechanisms"
 
   policy = <<EOF
