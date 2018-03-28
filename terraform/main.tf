@@ -80,7 +80,7 @@ resource "aws_s3_bucket" "vault_storage" {
 # IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "eximchain_node" {
-  name = "eximchain-node"
+  name_prefix = "eximchain-node-"
 
   assume_role_policy = <<EOF
 {
@@ -98,7 +98,7 @@ EOF
 }
 
 resource "aws_iam_policy" "allow_aws_auth" {
-  name        = "eximchain_allow_aws_auth_net_${var.network_id}"
+  name_prefix = "eximchain-aws-auth-net-${var.network_id}-"
   description = "Allow authentication to vault by AWS mechanisms"
 
   policy = <<EOF
@@ -119,7 +119,7 @@ EOF
 }
 
 resource "aws_iam_policy" "allow_s3_bucket" {
-  name        = "eximchain_allow_s3_bucket_net_${var.network_id}"
+  name_prefix = "eximchain-s3-bucket-net-${var.network_id}-"
   description = "Allow authentication to vault by AWS mechanisms"
 
   policy = <<EOF
