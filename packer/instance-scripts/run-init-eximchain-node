@@ -1,0 +1,24 @@
+#!/bin/bash
+set -eu -o pipefail
+
+VAULT_URL=$1
+
+SUPERVISOR_CONFIG="/etc/supervisor/conf.d/init-eximchain-node-supervisor.conf"
+
+# Write the init-quorum supervisor config
+cat << EOF > $SUPERVISOR_CONFIG
+[program:init-eximchain-node]
+command=/opt/quorum/bin/init-eximchain-node.sh
+stdout_logfile=/opt/quorum/log/init-eximchain-stdout.log
+stderr_logfile=/opt/quorum/log/init-eximchain-error.log
+numprocs=1
+autostart=true
+autorestart=unexpected
+stopsignal=INT
+user=ubuntu
+environment=VAULT_ADDR=$VAULT_URL
+EOF
+
+# Read and run the supervisor config
+sudo supervisorctl reread
+sudo supervisorctl update

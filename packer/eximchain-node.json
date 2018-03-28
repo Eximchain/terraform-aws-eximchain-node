@@ -1,0 +1,118 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "aws_region": "us-east-1",
+    "extra_regions": "",
+    "ami_groups": "",
+    "vault_version": "0.9.0",
+    "consul_version": "1.0.1",
+    "consul_module_version": "v0.1.0",
+    "terraform_aws_vault_module_version": "v0.0.8"
+  },
+  "builders": [{
+    "ami_name": "eximchain-node-{{isotime | clean_ami_name}}",
+    "ami_description": "An Ubuntu 16.04 AMI with that runs an eximchain node.",
+    "instance_type": "t2.medium",
+    "name": "ubuntu16-quorum-ami",
+    "region": "{{user `aws_region`}}",
+    "ami_regions": "{{user `extra_regions`}}",
+    "ami_groups": "{{user `ami_groups`}}",
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "architecture": "x86_64",
+        "name": "*ubuntu-xenial-16.04-amd64-server-*",
+        "block-device-mapping.volume-type": "gp2",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "ssh_username": "ubuntu"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "provisioning-scripts/build-deps.sh",
+    "pause_before": "30s"
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `terraform_aws_vault_module_version`}} https://github.com/hashicorp/terraform-aws-vault.git /tmp/terraform-aws-vault",
+      "/tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}}",
+      "sudo cp /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store /opt/vault/bin/"
+    ]
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
+      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
+      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+    ]
+  },{
+    "type": "shell",
+    "scripts": [
+      "provisioning-scripts/dir-setup.sh",
+      "provisioning-scripts/constellation.sh",
+      "provisioning-scripts/golang.sh",
+      "provisioning-scripts/porosity.sh",
+      "provisioning-scripts/quorum.sh",
+      "provisioning-scripts/quorum-setup.sh",
+      "provisioning-scripts/s3fs.sh"
+    ]
+  },{
+    "type": "file",
+    "source": "configs/constellation-supervisor.conf",
+    "destination": "/tmp/constellation-supervisor.conf"
+  },{
+    "type": "file",
+    "source": "configs/constellation.conf",
+    "destination": "/tmp/constellation.conf"
+  },{
+    "type": "file",
+    "source": "instance-scripts/run-init-eximchain-node",
+    "destination": "/tmp/run-init-eximchain-node"
+  },{
+    "type": "file",
+    "source": "instance-scripts/init-eximchain-node.sh",
+    "destination": "/tmp/init-eximchain-node.sh"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
+      "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf",
+      "sudo mv /tmp/init-eximchain-node.sh /opt/quorum/bin/",
+      "sudo mv /tmp/run-init-eximchain-node /opt/quorum/bin/",
+      "sudo chmod 744 /opt/quorum/bin/*"
+    ]
+  },{
+    "type": "file",
+    "source": "vault-policies/eximchain-node.hcl",
+    "destination": "/tmp/eximchain-node.hcl"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mkdir /opt/vault/config/policies",
+      "sudo mv /tmp/eximchain-node.hcl /opt/vault/config/policies/",
+      "sudo chown vault:vault /opt/vault/config/policies/*",
+      "sudo chmod 644 /opt/vault/config/policies/*"
+    ]
+  },{
+    "type": "file",
+    "source": "instance-scripts/generate-setup-vault",
+    "destination": "/tmp/generate-setup-vault"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/generate-setup-vault /opt/vault/bin/",
+      "sudo chown ubuntu /opt/vault/bin/generate-setup-vault",
+      "sudo chmod 744 /opt/vault/bin/generate-setup-vault"
+    ],
+    "pause_before": "5s"
+  }],
+  "post-processors": [{
+    "type": "manifest",
+    "output": "manifests/eximchain-node.json",
+    "strip_path": true
+  }]
+}
