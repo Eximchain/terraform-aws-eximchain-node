@@ -1,9 +1,8 @@
-public_key_path                    = "~/.ssh/eximchain-node.pub"
+network_id                         = 513
+public_key_path                    = "~/.ssh/quorum.pub"
 aws_region                         = "us-east-1"
+availability_zone                  = "us-east-1a"
 cert_owner                         = "FIXME_USER"
-force_destroy_s3_buckets           = true
-vault_cluster_size                 = 1
-vault_instance_type                = "t2.small"
-consul_cluster_size                = 1
-consul_instance_type               = "t2.small"
-tx_executor_instance_type          = "t2.medium"
+node_volume_size                   = 200
+force_destroy_s3_bucket            = true
+eximchain_node_instance_type       = "t2.medium"
