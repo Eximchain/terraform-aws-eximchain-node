@@ -147,14 +147,6 @@ resource "aws_iam_role_policy_attachment" "allow_s3_bucket" {
   policy_arn = "${aws_iam_policy.allow_s3_bucket.arn}"
 }
 
-# Only attach policy if using external vault
-resource "aws_iam_role_policy_attachment" "vault_cert_access" {
-  count = "${var.vault_dns == "127.0.0.1" ? 0 : 1}"
-
-  role       = "${aws_iam_role.eximchain_node.name}"
-  policy_arn = "${var.vault_cert_access_policy_arn}"
-}
-
 module "consul_iam_policies_servers" {
   source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
 
