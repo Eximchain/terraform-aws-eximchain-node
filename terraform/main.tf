@@ -149,7 +149,7 @@ resource "aws_iam_role_policy_attachment" "allow_s3_bucket" {
 
 # Only attach policy if using external vault
 resource "aws_iam_role_policy_attachment" "vault_cert_access" {
-  count = "${var.vault_cert_access_policy_arn == "" ? 0 : 1}"
+  count = "${var.vault_dns == "127.0.0.1" ? 0 : 1}"
 
   role       = "${aws_iam_role.eximchain_node.name}"
   policy_arn = "${var.vault_cert_access_policy_arn}"
