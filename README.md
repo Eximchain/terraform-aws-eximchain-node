@@ -10,15 +10,9 @@ Table of Contents
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
-         * [Unseal additional vault servers](#unseal-additional-vault-servers)
-      * [Access the Quorum Node](#access-the-quorum-node)
-         * [Check processes have started](#check-processes-have-started)
+      * [Wait for processes](#wait-for-processes)
          * [Attach the Geth Console](#attach-the-geth-console)
-         * [Run Private Transaction Test](#run-private-transaction-test)
-            * [Deploy the private contract](#deploy-the-private-contract)
-         * [Destroy the Network](#destroy-the-network)
-   * [Using as a Terraform Module](#using-as-a-terraform-module)
-   * [Roadmap](#roadmap)
+         * [Destroy the Node](#destroy-the-node)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
