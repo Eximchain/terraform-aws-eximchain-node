@@ -45,7 +45,9 @@ resource "aws_vpc" "eximchain_node" {
 
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "eximchain_node" {
-  vpc_id = "${var.aws_vpc == "" ? aws_vpc.eximchain_node.id : var.aws_vpc}"
+  count = "${var.aws_vpc == "" ? 1 : 0}"
+
+  vpc_id = "${aws_vpc.eximchain_node.id}"
 }
 
 # Grant the VPC internet access on its main route table
