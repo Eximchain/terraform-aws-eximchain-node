@@ -52,6 +52,11 @@ variable "node_volume_size" {
   default     = 50
 }
 
+variable "aws_vpc" {
+  description = "The preexisting VPC to use. Leave empty to create a new one."
+  default = ""
+}
+
 variable "force_destroy_s3_bucket" {
   description = "Whether or not to force destroy vault s3 bucket. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
   default     = false

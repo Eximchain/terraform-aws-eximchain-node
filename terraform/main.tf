@@ -37,24 +37,28 @@ module "cert_tool" {
 # NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_vpc" "eximchain_node" {
+  count = "${var.aws_vpc == "" ? 1 : 0}"
+
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
 }
 
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "eximchain_node" {
-  vpc_id = "${aws_vpc.eximchain_node.id}"
+  vpc_id = "${var.aws_vpc == "" ? aws_vpc.eximchain_node.id : var.aws_vpc}"
 }
 
 # Grant the VPC internet access on its main route table
 resource "aws_route" "eximchain_node" {
+  count = "${var.aws_vpc == "" ? 1 : 0}"
+
   route_table_id         = "${aws_vpc.eximchain_node.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.eximchain_node.id}"
 }
 
 resource "aws_subnet" "eximchain_node" {
-  vpc_id                  = "${aws_vpc.eximchain_node.id}"
+  vpc_id                  = "${var.aws_vpc == "" ? aws_vpc.eximchain_node.id : var.aws_vpc}"
   availability_zone       = "${var.availability_zone}"
   cidr_block              = "10.0.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
