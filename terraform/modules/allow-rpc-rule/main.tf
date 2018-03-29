@@ -1,4 +1,4 @@
-resource "aws_security_group_rule" "eximchain_node_rpc_external" {
+resource "aws_security_group_rule" "rpc_external" {
   security_group_id = "${var.node_security_group}"
   type              = "ingress"
 
