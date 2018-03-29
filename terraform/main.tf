@@ -46,8 +46,6 @@ module "eximchain_node" {
   vault_cert_bucket = "${var.vault_cert_bucket}"
   vault_port        = "${var.vault_port}"
 
-  rpc_access_security_groups = "${var.rpc_access_security_groups}"
-
   cert_org_name            = "${var.cert_org_name}"
   consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
