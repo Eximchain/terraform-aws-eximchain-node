@@ -10,3 +10,7 @@ output "eximchain_node_rpc_port" {
 output "eximchain_node_iam_role" {
   value = "${aws_iam_role.eximchain_node.name}"
 }
+
+output "eximchain_node_security_group_id" {
+  value = "${aws_security_group.eximchain_node.id}"
+}
