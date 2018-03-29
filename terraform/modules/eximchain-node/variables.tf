@@ -10,6 +10,10 @@ variable "availability_zone" {
   description = "AWS availability zone to launch the node in"
 }
 
+variable "aws_vpc" {
+  description = "The VPC to place the node in"
+}
+
 variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
 }

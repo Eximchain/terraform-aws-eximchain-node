@@ -1,5 +1,5 @@
 output "eximchain_node_dns" {
-  value = "${module.eximchain_node.eximchain_node_dns}"
+  value = "${aws_instance.eximchain_node.public_dns}"
 }
 
 output "eximchain_node_rpc_port" {
@@ -8,5 +8,5 @@ output "eximchain_node_rpc_port" {
 }
 
 output "eximchain_node_iam_role" {
-  value = "${module.eximchain_node.eximchain_node_iam_role}"
+  value = "${aws_iam_role.eximchain_node.name}"
 }
