@@ -194,19 +194,6 @@ resource "aws_security_group_rule" "eximchain_node_rpc" {
   cidr_blocks = ["127.0.0.1/32"]
 }
 
-resource "aws_security_group_rule" "eximchain_node_rpc_external" {
-  count = "${length(var.rpc_access_security_groups)}"
-
-  security_group_id = "${aws_security_group.eximchain_node.id}"
-  type              = "ingress"
-
-  from_port = 22000
-  to_port   = 22000
-  protocol  = "tcp"
-
-  source_security_group_id = "${element(var.rpc_access_security_groups, count.index)}"
-}
-
 resource "aws_security_group_rule" "eximchain_node_egress" {
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "egress"
