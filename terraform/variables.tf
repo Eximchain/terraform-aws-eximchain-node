@@ -57,6 +57,11 @@ variable "aws_vpc" {
   default = ""
 }
 
+variable "rpc_access_security_groups" {
+  description = "A list of security groups to grant RPC access to"
+  default     = []
+}
+
 variable "force_destroy_s3_bucket" {
   description = "Whether or not to force destroy vault s3 bucket. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
   default     = false
