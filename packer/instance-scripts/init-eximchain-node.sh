@@ -13,9 +13,10 @@ function wait_for_successful_command {
 }
 
 function download_chain_metadata {
-  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/quorum/testnet-1/quorum-genesis.json > /opt/quorum/private/quorum-genesis.json
-  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/quorum/testnet-1/bootnodes.txt > /opt/quorum/info/bootnodes.txt
-  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/quorum/testnet-1/constellation-bootnodes.txt > /opt/quorum/info/constellation-bootnodes.txt
+  local readonly DATADIR="quorum/testnet-2"
+  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/quorum-genesis.json > /opt/quorum/private/quorum-genesis.json
+  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/bootnodes.txt > /opt/quorum/info/bootnodes.txt
+  curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/constellation-bootnodes.txt > /opt/quorum/info/constellation-bootnodes.txt
 }
 
 function generate_eximchain_supervisor_config {
