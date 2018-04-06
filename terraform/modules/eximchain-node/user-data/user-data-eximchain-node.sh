@@ -54,7 +54,7 @@ wait_for_terraform_provisioners
 # Start vault and consul servers if we're using a local vault
 if [ ${vault_dns} == "127.0.0.1" ]
 then
-  /opt/vault/bin/generate-setup-vault
+  /opt/vault/bin/generate-setup-vault ${iam_role_name}
   # These variables are passed in via Terraform template interpolation
   /opt/consul/bin/run-consul --server --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
   /opt/vault/bin/run-vault --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE"

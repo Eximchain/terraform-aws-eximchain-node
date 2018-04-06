@@ -1,9 +1,10 @@
 #!/bin/bash
 set -eu -o pipefail
 
+ROLE_NAME=$1
+
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
-ROLE_NAME="eximchain-node"
 
 # Write the setup-vault script
 cat << EOF > $OUTPUT_FILE

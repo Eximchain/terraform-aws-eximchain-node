@@ -256,8 +256,9 @@ data "template_file" "user_data_eximchain_node" {
   template = "${file("${path.module}/user-data/user-data-eximchain-node.sh")}"
 
   vars {
-    aws_region = "${var.aws_region}"
+    aws_region     = "${var.aws_region}"
     s3_bucket_name = "${aws_s3_bucket.vault_storage.id}"
+    iam_role_name  = "${aws_iam_role.eximchain_node.name}"
 
     vault_dns         = "${var.vault_dns}"
     vault_port        = "${var.vault_port}"
