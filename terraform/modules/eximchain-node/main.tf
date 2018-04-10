@@ -218,7 +218,7 @@ resource "aws_instance" "eximchain_node" {
 
   instance_type = "${var.eximchain_node_instance_type}"
 
-  ami       = "${lookup(var.eximchain_node_amis, var.aws_region)}"
+  ami       = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
   user_data = "${data.template_file.user_data_eximchain_node.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -266,5 +266,15 @@ data "template_file" "user_data_eximchain_node" {
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
+  }
+}
+
+data "aws_ami" "eximchain_node" {
+  most_recent = true
+  owners      = ["037794263736"]
+
+  filter {
+    name   = "name"
+    values = ["eximchain-node-*"]
   }
 }

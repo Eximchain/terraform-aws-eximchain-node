@@ -70,26 +70,15 @@ $ ssh-add ~/.ssh/eximchain-node
 
 ## Build AMIs to launch the instances with
 
-Use packer to build the AMIs needed to launch instances
+You may skip this step. If you do, your AMI will be the most recent one built by the official Eximchain AWS Account. We try to keep this as recent as possible but currently no guarantees are made.
+
+If you wish to build yourself, use packer to build the AMIs needed to launch instances
 
 ```sh
 $ cd packer
 $ packer build eximchain-node.json
 # Wait for build
 $ cd ..
-```
-
-Then copy the AMIs to into terraform variables
-
-```sh
-$ python copy-packer-artifacts-to-terraform.py
-```
-
-If you would like to back up the previous AMI variables in case something goes wrong with the new one, you can use this invocation instead
-
-```sh
-$ BACKUP=<File path to back up to>
-$ python copy-packer-artifacts-to-terraform.py --tfvars-backup-file $BACKUP
 ```
 
 ## Launch Network with Terraform
@@ -106,6 +95,8 @@ Fill in your username as the `cert_owner`:
 ```sh
 $ sed -i '' "s/FIXME_USER/$USER/" terraform.tfvars
 ```
+
+If you did the build yourself, make sure to specify a `eximchain_node_ami` variable with the resulting AMI ID.
 
 Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
 

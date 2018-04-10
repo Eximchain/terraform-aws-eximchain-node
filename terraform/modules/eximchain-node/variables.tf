@@ -22,11 +22,6 @@ variable "cert_owner" {
   description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
 }
 
-variable "eximchain_node_amis" {
-  description = "Mapping from AWS region to AMI ID to use for transaction executor nodes in that region"
-  type        = "map"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -59,6 +54,11 @@ variable "node_volume_size" {
 variable "force_destroy_s3_bucket" {
   description = "Whether or not to force destroy vault s3 bucket. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
   default     = false
+}
+
+variable "eximchain_node_ami" {
+  description = "ID of AMI to use for eximchain node. If not set, will retrieve the latest version from Eximchain."
+  default     = ""
 }
 
 variable "eximchain_node_instance_type" {
