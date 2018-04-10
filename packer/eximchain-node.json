@@ -3,7 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "",
+    "ami_groups": "all",
     "vault_version": "0.9.0",
     "consul_version": "1.0.1",
     "consul_module_version": "v0.1.0",
