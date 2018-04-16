@@ -208,47 +208,35 @@ resource "aws_security_group_rule" "eximchain_node_egress" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EXIMCHAIN NODE
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_instance" "eximchain_node" {
-  connection {
-    # The default username for our AMI
-    user = "ubuntu"
+resource "aws_autoscaling_group" "eximchain_node" {
+  name_prefix = "eximchain-node-net-${var.network_id}-"
 
-    # The connection will use the local SSH agent for authentication.
-  }
+  launch_configuration = "${aws_launch_configuration.eximchain_node.name}"
 
+  min_size         = 1
+  max_size         = 1
+  desired_capacity = 1
+
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+
+  vpc_zone_identifier = ["${aws_subnet.eximchain_node.id}"]
+}
+
+resource "aws_launch_configuration" "eximchain_node" {
+  name_prefix = "eximchain-node-net-${var.network_id}-"
+
+  image_id      = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
   instance_type = "${var.eximchain_node_instance_type}"
-
-  ami       = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
-  user_data = "${data.template_file.user_data_eximchain_node.rendered}"
+  user_data     = "${data.template_file.user_data_eximchain_node.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.eximchain_node.name}"
-
-  vpc_security_group_ids = ["${aws_security_group.eximchain_node.id}"]
-  subnet_id              = "${aws_subnet.eximchain_node.id}"
-
-  tags {
-    Name = "eximchain-node"
-  }
+  security_groups      = ["${aws_security_group.eximchain_node.id}"]
 
   root_block_device {
     volume_size = "${var.node_volume_size}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
-      "echo '${module.cert_tool.ca_public_key}' | sudo tee /opt/vault/tls/ca.crt.pem",
-      "echo '${module.cert_tool.public_key}' | sudo tee /opt/vault/tls/vault.crt.pem",
-      "echo '${module.cert_tool.private_key}' | sudo tee /opt/vault/tls/vault.key.pem",
-      "sudo chown vault /opt/vault/tls/*",
-      "sudo chmod 600 /opt/vault/tls/*",
-      "sudo /opt/vault/bin/update-certificate-store --cert-file-path /opt/vault/tls/ca.crt.pem",
-      # This should be last because init scripts wait for this file to determine terraform is done provisioning
-      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
-    ]
   }
 }
 
@@ -257,12 +245,17 @@ data "template_file" "user_data_eximchain_node" {
 
   vars {
     aws_region     = "${var.aws_region}"
+    network_id     = "${var.network_id}"
     s3_bucket_name = "${aws_s3_bucket.vault_storage.id}"
     iam_role_name  = "${aws_iam_role.eximchain_node.name}"
 
     vault_dns         = "${var.vault_dns}"
     vault_port        = "${var.vault_port}"
     vault_cert_bucket = "${var.vault_cert_bucket}"
+
+    vault_ca_public_key = "${module.cert_tool.ca_public_key}"
+    vault_public_key    = "${module.cert_tool.public_key}"
+    vault_private_key   = "${module.cert_tool.private_key}"
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
@@ -276,5 +269,12 @@ data "aws_ami" "eximchain_node" {
   filter {
     name   = "name"
     values = ["eximchain-node-*"]
+  }
+}
+
+data "aws_instance" "eximchain_node" {
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${aws_autoscaling_group.eximchain_node.name}"]
   }
 }
