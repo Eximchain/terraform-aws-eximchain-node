@@ -10,6 +10,8 @@ readonly BASH_PROFILE_FILE="/home/ubuntu/.bash_profile"
 echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}" >> $BASH_PROFILE_FILE
 source $BASH_PROFILE_FILE
 
+sleep 60
+
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
