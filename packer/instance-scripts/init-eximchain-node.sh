@@ -13,7 +13,7 @@ function wait_for_successful_command {
 }
 
 function download_chain_metadata {
-  local readonly DATADIR="quorum/testnet-3"
+  local readonly DATADIR="quorum/testnet-4"
   curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/quorum-genesis.json > /opt/quorum/private/quorum-genesis.json
   curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/bootnodes.txt > /opt/quorum/info/bootnodes.txt
   curl https://raw.githubusercontent.com/Eximchain/eximchain-testnet-data/master/$DATADIR/constellation-bootnodes.txt > /opt/quorum/info/constellation-bootnodes.txt
