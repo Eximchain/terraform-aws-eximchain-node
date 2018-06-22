@@ -35,6 +35,7 @@ module "eximchain_node" {
 
   network_id                   = "${var.network_id}"
   public_key_path              = "${var.public_key_path}"
+  public_key                   = "${var.public_key}"
   aws_region                   = "${var.aws_region}"
   availability_zone            = "${var.availability_zone}"
   cert_owner                   = "${var.cert_owner}"
