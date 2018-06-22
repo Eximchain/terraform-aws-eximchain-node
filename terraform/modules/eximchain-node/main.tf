@@ -47,8 +47,8 @@ resource "aws_subnet" "eximchain_node" {
 # KEY PAIR
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_key_pair" "auth" {
-  key_name   = "eximchain-node"
   public_key = "${file(var.public_key_path)}"
+  key_name_prefix = "eximchain-node-net-${var.network_id}-"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ resource "aws_s3_bucket" "vault_storage" {
 # IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "eximchain_node" {
-  name_prefix = "eximchain-node-"
+  name_prefix = "eximchain-node-net-${var.network_id}-"
 
   assume_role_policy = <<EOF
 {
@@ -137,7 +137,7 @@ module "consul_iam_policies_servers" {
 }
 
 resource "aws_iam_instance_profile" "eximchain_node" {
-  name = "eximchain-node-network-${var.network_id}"
+  name = "${aws_iam_role.eximchain_node.name}"
   role = "${aws_iam_role.eximchain_node.name}"
 }
 
