@@ -56,6 +56,7 @@
       "provisioning-scripts/constellation.sh",
       "provisioning-scripts/golang.sh",
       "provisioning-scripts/porosity.sh",
+      "provisioning-scripts/solc.sh",
       "provisioning-scripts/quorum.sh",
       "provisioning-scripts/quorum-setup.sh",
       "provisioning-scripts/s3fs.sh"
