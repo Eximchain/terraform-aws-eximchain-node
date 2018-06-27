@@ -1,7 +1,6 @@
 #!/bin/bash
 set -eu -o pipefail
 
-sudo add-apt-repository ppa:ethereum/ethereum
 sudo apt-get update
 sudo apt-get install -y build-essential unzip cmake libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev sysvbanner wrk git npm automake autotools-dev fuse g++ libcurl4-gnutls-dev libfuse-dev libssl-dev libxml2-dev libboost-all-dev make pkg-config python-pip
 sudo pip install boto3
