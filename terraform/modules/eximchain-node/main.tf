@@ -196,6 +196,17 @@ resource "aws_security_group_rule" "eximchain_node_quorum" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "quorum_udp" {
+  security_group_id = "${aws_security_group.eximchain_node.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "eximchain_node_rpc" {
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
