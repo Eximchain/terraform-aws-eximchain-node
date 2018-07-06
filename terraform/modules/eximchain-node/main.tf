@@ -197,7 +197,7 @@ resource "aws_security_group_rule" "eximchain_node_quorum" {
 }
 
 resource "aws_security_group_rule" "quorum_udp" {
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
 
   from_port = 21000
