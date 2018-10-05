@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-RELEASE="v1.2.1-modified"
+RELEASE="eximchain-integration"
 
 source /home/ubuntu/.bash_profile
 git clone https://github.com/Eximchain/quorum.git
