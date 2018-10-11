@@ -207,7 +207,7 @@ resource "aws_security_group_rule" "quorum_udp" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "eximchain_node_rpc" {
+resource "aws_security_group_rule" "eximchain_node_rpc_self" {
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
 
@@ -215,7 +215,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc" {
   to_port   = 22000
   protocol  = "tcp"
 
-  cidr_blocks = ["127.0.0.1/32"]
+  self = true
 }
 
 resource "aws_security_group_rule" "eximchain_node_egress" {
