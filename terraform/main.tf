@@ -51,6 +51,9 @@ module "eximchain_node" {
   consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
+  rpc_cidrs           = "${var.rpc_cidrs}"
+  rpc_security_groups = "${var.rpc_security_groups}"
+
   eximchain_node_ami = "${var.eximchain_node_ami}"
 
   aws_vpc = "${aws_vpc.eximchain_node.id}"

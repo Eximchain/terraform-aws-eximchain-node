@@ -218,6 +218,32 @@ resource "aws_security_group_rule" "eximchain_node_rpc_self" {
   self = true
 }
 
+resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
+  count = "${length(var.rpc_cidrs) == 0 ? 0 : 1}"
+
+  security_group_id = "${aws_security_group.eximchain_node.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  cidr_blocks = "${var.rpc_cidrs}"
+}
+
+resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
+  count = "${length(var.rpc_security_groups)}"
+
+  security_group_id = "${aws_security_group.eximchain_node.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  source_security_group_id = "${element(var.rpc_security_groups, count.index)}"
+}
+
 resource "aws_security_group_rule" "eximchain_node_egress" {
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "egress"

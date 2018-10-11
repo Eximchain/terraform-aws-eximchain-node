@@ -62,6 +62,16 @@ variable "force_destroy_s3_bucket" {
   default     = false
 }
 
+variable "rpc_cidrs" {
+  description = "List of CIDR ranges to allow access to the RPC port."
+  default     = []
+}
+
+variable "rpc_security_groups" {
+  description = "List of security groups in the same region to allow access to the RPC port."
+  default     = []
+}
+
 variable "eximchain_node_ami" {
   description = "ID of AMI to use for eximchain node. If not set, will retrieve the latest version from Eximchain."
   default     = ""
