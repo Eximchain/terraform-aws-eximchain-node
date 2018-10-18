@@ -11,7 +11,7 @@ provider "aws" {
 # NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_vpc" "eximchain_node" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = "${var.vpc_cidr}"
   enable_dns_hostnames = true
 }
 
@@ -57,4 +57,6 @@ module "eximchain_node" {
   eximchain_node_ami = "${var.eximchain_node_ami}"
 
   aws_vpc = "${aws_vpc.eximchain_node.id}"
+
+  base_subnet_cidr = "${var.vpc_cidr}"
 }

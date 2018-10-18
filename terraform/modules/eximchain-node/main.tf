@@ -43,7 +43,7 @@ module "cert_tool" {
 resource "aws_subnet" "eximchain_node" {
   vpc_id                  = "${var.aws_vpc}"
   availability_zone       = "${var.availability_zone}"
-  cidr_block              = "10.0.${count.index + 1}.0/24"
+  cidr_block              = "${var.base_subnet_cidr}"
   map_public_ip_on_launch = true
 }
 

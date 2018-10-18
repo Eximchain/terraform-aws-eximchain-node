@@ -87,6 +87,11 @@ variable "cert_org_name" {
   default     = "Example Co."
 }
 
+variable "base_subnet_cidr" {
+  description = "The cidr range to use for subnets."
+  default     = "10.0.0.0/16"
+}
+
 variable "consul_cluster_tag_key" {
   description = "consul tag key"
   default     = "eximchain-node-consul-key"
