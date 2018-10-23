@@ -52,6 +52,12 @@ in the event new regions are added to AWS infrastructure or incompatibilities wi
 * ca-central-1
 * sa-east-1
 
+## Selecting A Network
+
+The network that the eximchain node will connect to is determined in the AMI at packer build time.
+
+By default, the packer build will build an AMI that will connect to the Eximchain main network. If you wish to connect to the Eximchain test network, use the `gamma-test-network` branch to build your AMI instead. You MUST build your own AMI to connect to the Eximchain test network.
+
 # Generate SSH key for EC2 instances
 
 Generate an RSA key with ssh-keygen. This only needs to be done once. If you change the output file location you must change the key paths in the terraform variables file later.
