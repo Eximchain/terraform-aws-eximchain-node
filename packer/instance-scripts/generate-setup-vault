@@ -26,7 +26,7 @@ AUDIT_LOG=/opt/vault/log/audit.log
 vault audit-enable file file_path=\$AUDIT_LOG
 
 # Mount the quorum path
-vault mount -path=node -default-lease-ttl=30 -description="Private data related to quorum node" kv
+vault mount -path=nodes -default-lease-ttl=30 -description="Private data related to quorum node" kv
 
 # Create policies
 EXIMCHAIN_NODE_POLICY=/opt/vault/config/policies/eximchain-node.hcl
