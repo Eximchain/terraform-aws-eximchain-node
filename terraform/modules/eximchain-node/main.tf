@@ -270,7 +270,7 @@ resource "aws_autoscaling_group" "eximchain_node" {
   desired_capacity = 1
 
   health_check_grace_period = 300
-  health_check_type         = "ELB"
+  health_check_type         = "EC2"
 
   vpc_zone_identifier = ["${aws_subnet.eximchain_node.id}"]
 }
