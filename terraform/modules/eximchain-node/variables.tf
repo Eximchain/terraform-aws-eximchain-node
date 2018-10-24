@@ -56,6 +56,11 @@ variable "network_id" {
   default     = 513
 }
 
+variable "node_count" {
+  description = "The number of nodes to launch behind the load balancer."
+  default     = 1
+}
+
 variable "node_volume_size" {
   description = "The size of the storage drive on the node"
   default     = 50

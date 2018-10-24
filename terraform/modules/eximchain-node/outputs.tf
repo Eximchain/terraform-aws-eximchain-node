@@ -7,7 +7,7 @@ output "eximchain_lb_zone_id" {
 }
 
 output "eximchain_node_ssh_dns" {
-  value = "${data.aws_instance.eximchain_node.public_dns}"
+  value = "${data.aws_instance.eximchain_node.*.public_dns}"
 }
 
 output "eximchain_node_rpc_port" {

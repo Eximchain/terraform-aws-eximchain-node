@@ -40,6 +40,7 @@ module "eximchain_node" {
   availability_zone            = "${var.availability_zone}"
   lb_extra_az                  = "${var.lb_extra_az}"
   cert_owner                   = "${var.cert_owner}"
+  node_count                   = "${var.node_count}"
   node_volume_size             = "${var.node_volume_size}"
   force_destroy_s3_bucket      = "${var.force_destroy_s3_bucket}"
   eximchain_node_instance_type = "${var.eximchain_node_instance_type}"

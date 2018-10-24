@@ -259,9 +259,11 @@ resource "aws_security_group_rule" "eximchain_node_egress" {
 # EXIMCHAIN NODE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "eximchain_node" {
-  name_prefix = "eximchain-node-net-${var.network_id}-"
+  count = "${var.node_count}"
 
-  launch_configuration = "${aws_launch_configuration.eximchain_node.name}"
+  name_prefix = "eximchain-node-${count.index}-net-${var.network_id}-"
+
+  launch_configuration = "${element(aws_launch_configuration.eximchain_node.*.name, count.index)}"
 
   target_group_arns = ["${aws_lb_target_group.eximchain_node_rpc.arn}"]
 
@@ -276,11 +278,13 @@ resource "aws_autoscaling_group" "eximchain_node" {
 }
 
 resource "aws_launch_configuration" "eximchain_node" {
-  name_prefix = "eximchain-node-net-${var.network_id}-"
+  count = "${var.node_count}"
+
+  name_prefix = "eximchain-node-${count.index}-net-${var.network_id}-"
 
   image_id      = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
   instance_type = "${var.eximchain_node_instance_type}"
-  user_data     = "${data.template_file.user_data_eximchain_node.rendered}"
+  user_data     = "${element(data.template_file.user_data_eximchain_node.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
 
@@ -293,6 +297,8 @@ resource "aws_launch_configuration" "eximchain_node" {
 }
 
 data "template_file" "user_data_eximchain_node" {
+  count = "${var.node_count}"
+
   template = "${file("${path.module}/user-data/user-data-eximchain-node.sh")}"
 
   vars {
@@ -312,7 +318,7 @@ data "template_file" "user_data_eximchain_node" {
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    node_index = "0"
+    node_index = "${count.index}"
   }
 }
 
@@ -327,8 +333,10 @@ data "aws_ami" "eximchain_node" {
 }
 
 data "aws_instance" "eximchain_node" {
+  count = "${var.node_count}"
+
   filter {
     name   = "tag:aws:autoscaling:groupName"
-    values = ["${aws_autoscaling_group.eximchain_node.name}"]
+    values = ["${element(aws_autoscaling_group.eximchain_node.*.name, count.index)}"]
   }
 }
