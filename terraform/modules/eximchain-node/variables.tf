@@ -6,14 +6,6 @@ variable "aws_region" {
   description = "AWS region to launch servers."
 }
 
-variable "availability_zone" {
-  description = "AWS availability zone to launch the node in"
-}
-
-variable "lb_extra_az" {
-  description = "Extra availability zone to put the load balancer in"
-}
-
 variable "aws_vpc" {
   description = "The VPC to place the node in"
 }
@@ -26,6 +18,11 @@ variable "cert_owner" {
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
+variable "availability_zones" {
+  description = "AWS availability zones to distribute the nodes amongst. Must name at least two. Defaults to distributing nodes across AZs."
+  default     = []
+}
+
 variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
   default     = ""

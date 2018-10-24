@@ -40,10 +40,17 @@ module "cert_tool" {
 # ---------------------------------------------------------------------------------------------------------------------
 # NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_subnet" "eximchain_node" {
+  # At least two for the load balancer, otherwise one per node up to the number of AZs
+  count = "${max(2, min(var.node_count, length(var.availability_zones) == 0 ? length(data.aws_availability_zones.available.names) : length(var.availability_zones)))}"
+
   vpc_id                  = "${var.aws_vpc}"
-  availability_zone       = "${var.availability_zone}"
-  cidr_block              = "${cidrsubnet(var.base_subnet_cidr, 2, 0)}"
+  availability_zone       = "${length(var.availability_zones) != 0 ? element(concat(var.availability_zones, list("")), count.index) : element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block              = "${cidrsubnet(cidrsubnet(var.base_subnet_cidr, 2, 0), 4, count.index)}"
   map_public_ip_on_launch = true
 }
 
@@ -274,7 +281,7 @@ resource "aws_autoscaling_group" "eximchain_node" {
   health_check_grace_period = 300
   health_check_type         = "EC2"
 
-  vpc_zone_identifier = ["${aws_subnet.eximchain_node.id}"]
+  vpc_zone_identifier = ["${element(aws_subnet.eximchain_node.*.id, count.index)}"]
 }
 
 resource "aws_launch_configuration" "eximchain_node" {

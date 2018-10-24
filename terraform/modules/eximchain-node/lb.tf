@@ -1,15 +1,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LOAD BALANCER FOR VAULT
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_subnet" "eximchain_lb_extra" {
-  vpc_id                  = "${var.aws_vpc}"
-  availability_zone       = "${var.lb_extra_az}"
-  cidr_block              = "${cidrsubnet(var.base_subnet_cidr, 2, 1)}"
-  map_public_ip_on_launch = true
-}
-
 resource "aws_lb" "eximchain_node" {
-  subnets         = ["${aws_subnet.eximchain_node.id}", "${aws_subnet.eximchain_lb_extra.id}"]
+  subnets         = ["${aws_subnet.eximchain_node.*.id}"]
   security_groups = ["${aws_security_group.eximchain_load_balancer.id}"]
 }
 
