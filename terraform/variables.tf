@@ -10,6 +10,10 @@ variable "availability_zone" {
   description = "AWS availability zone to launch the node in"
 }
 
+variable "lb_extra_az" {
+  description = "Extra availability zone to put the load balancer in"
+}
+
 variable "cert_owner" {
   description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
 }

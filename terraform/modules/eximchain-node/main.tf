@@ -43,7 +43,7 @@ module "cert_tool" {
 resource "aws_subnet" "eximchain_node" {
   vpc_id                  = "${var.aws_vpc}"
   availability_zone       = "${var.availability_zone}"
-  cidr_block              = "${var.base_subnet_cidr}"
+  cidr_block              = "${cidrsubnet(var.base_subnet_cidr, 2, 0)}"
   map_public_ip_on_launch = true
 }
 
@@ -262,6 +262,8 @@ resource "aws_autoscaling_group" "eximchain_node" {
   name_prefix = "eximchain-node-net-${var.network_id}-"
 
   launch_configuration = "${aws_launch_configuration.eximchain_node.name}"
+
+  target_group_arns = ["${aws_lb_target_group.eximchain_node_rpc.arn}"]
 
   min_size         = 1
   max_size         = 1

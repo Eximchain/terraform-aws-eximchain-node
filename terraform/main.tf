@@ -38,6 +38,7 @@ module "eximchain_node" {
   public_key                   = "${var.public_key}"
   aws_region                   = "${var.aws_region}"
   availability_zone            = "${var.availability_zone}"
+  lb_extra_az                  = "${var.lb_extra_az}"
   cert_owner                   = "${var.cert_owner}"
   node_volume_size             = "${var.node_volume_size}"
   force_destroy_s3_bucket      = "${var.force_destroy_s3_bucket}"

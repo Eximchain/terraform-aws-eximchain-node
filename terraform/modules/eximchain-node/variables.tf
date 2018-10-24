@@ -10,6 +10,10 @@ variable "availability_zone" {
   description = "AWS availability zone to launch the node in"
 }
 
+variable "lb_extra_az" {
+  description = "Extra availability zone to put the load balancer in"
+}
+
 variable "aws_vpc" {
   description = "The VPC to place the node in"
 }
