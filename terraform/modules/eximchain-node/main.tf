@@ -272,7 +272,7 @@ resource "aws_autoscaling_group" "eximchain_node" {
 
   launch_configuration = "${element(aws_launch_configuration.eximchain_node.*.name, count.index)}"
 
-  target_group_arns = ["${aws_lb_target_group.eximchain_node_rpc.arn}"]
+  target_group_arns = ["${element(coalescelist(aws_lb_target_group.eximchain_node_rpc.*.arn, list("")), 0)}"]
 
   min_size         = 1
   max_size         = 1

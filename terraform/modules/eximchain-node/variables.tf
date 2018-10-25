@@ -23,6 +23,11 @@ variable "availability_zones" {
   default     = []
 }
 
+variable "create_load_balancer" {
+  description = "Whether to create a load balancer to load balance RPC requests."
+  default     = true
+}
+
 variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
   default     = ""

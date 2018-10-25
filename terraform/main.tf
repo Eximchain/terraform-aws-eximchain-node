@@ -39,6 +39,7 @@ module "eximchain_node" {
   aws_region                   = "${var.aws_region}"
   availability_zones           = "${var.availability_zones}"
   cert_owner                   = "${var.cert_owner}"
+  create_load_balancer         = "${var.create_load_balancer}"
   node_count                   = "${var.node_count}"
   node_volume_size             = "${var.node_volume_size}"
   force_destroy_s3_bucket      = "${var.force_destroy_s3_bucket}"

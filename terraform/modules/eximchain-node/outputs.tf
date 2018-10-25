@@ -1,9 +1,9 @@
 output "eximchain_node_dns" {
-  value = "${aws_lb.eximchain_node.dns_name}"
+  value = "${element(coalescelist(aws_lb.eximchain_node.*.dns_name, data.aws_instance.eximchain_node.*.public_dns), 0)}"
 }
 
 output "eximchain_lb_zone_id" {
-  value = "${aws_lb.eximchain_node.zone_id}"
+  value = "${element(coalescelist(aws_lb.eximchain_node.*.zone_id, list("")), 0)}"
 }
 
 output "eximchain_node_ssh_dns" {

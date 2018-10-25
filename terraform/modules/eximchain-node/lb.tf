@@ -2,11 +2,15 @@
 # LOAD BALANCER FOR VAULT
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lb" "eximchain_node" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   subnets         = ["${aws_subnet.eximchain_node.*.id}"]
   security_groups = ["${aws_security_group.eximchain_load_balancer.id}"]
 }
 
 resource "aws_lb_target_group" "eximchain_node_rpc" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   name_prefix = "exim-"
   port        = 22000
   protocol    = "HTTPS"
@@ -14,6 +18,8 @@ resource "aws_lb_target_group" "eximchain_node_rpc" {
 }
 
 resource "aws_lb_listener" "eximchain_node_rpc" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   load_balancer_arn = "${aws_lb.eximchain_node.arn}"
   port              = 22000
   protocol          = "HTTP"
@@ -28,6 +34,8 @@ resource "aws_lb_listener" "eximchain_node_rpc" {
 # LOAD BALANCER SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_security_group" "eximchain_load_balancer" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   name_prefix = "eximchain-lb-"
   description = "Security group for the eximchain load balancer"
   vpc_id      = "${var.aws_vpc}"
@@ -41,6 +49,8 @@ resource "aws_security_group" "eximchain_load_balancer" {
 }
 
 resource "aws_security_group_rule" "eximchain_load_balancer_rpc_self" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
   type              = "ingress"
 
@@ -52,7 +62,7 @@ resource "aws_security_group_rule" "eximchain_load_balancer_rpc_self" {
 }
 
 resource "aws_security_group_rule" "eximchain_load_balancer_rpc_cidrs" {
-  count = "${length(var.rpc_cidrs) == 0 ? 0 : 1}"
+  count = "${var.create_load_balancer ? length(var.rpc_cidrs) == 0 ? 0 : 1 : 0}"
 
   security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
   type              = "ingress"
@@ -65,7 +75,7 @@ resource "aws_security_group_rule" "eximchain_load_balancer_rpc_cidrs" {
 }
 
 resource "aws_security_group_rule" "eximchain_load_balancer_rpc_security_groups" {
-  count = "${length(var.rpc_security_groups)}"
+  count = "${var.create_load_balancer ? length(var.rpc_security_groups) : 0}"
 
   security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
   type              = "ingress"
@@ -78,6 +88,8 @@ resource "aws_security_group_rule" "eximchain_load_balancer_rpc_security_groups"
 }
 
 resource "aws_security_group_rule" "eximchain_lb_egress" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
   type        = "egress"
   from_port   = 0
   to_port     = 0
