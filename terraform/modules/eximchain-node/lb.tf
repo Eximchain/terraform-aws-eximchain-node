@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "eximchain_node_rpc" {
 
   name_prefix = "exim-"
   port        = 22000
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   vpc_id      = "${var.aws_vpc}"
 }
 
