@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "eximchain_load_balancer_rpc_cidrs" {
 }
 
 resource "aws_security_group_rule" "eximchain_load_balancer_rpc_security_groups" {
-  count = "${var.create_load_balancer ? length(var.rpc_security_groups) : 0}"
+  count = "${var.create_load_balancer ? var.num_rpc_security_groups : 0}"
 
   security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
   type              = "ingress"
