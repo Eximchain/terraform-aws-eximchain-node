@@ -24,5 +24,5 @@ output "eximchain_node_security_group_id" {
 }
 
 output "eximchain_load_balancer_security_group_id" {
-  value = "${aws_security_group.eximchain_load_balancer.id}"
+  value = "${element(coalescelist(aws_security_group.eximchain_load_balancer.*.id, list("")), 0)}"
 }
