@@ -251,6 +251,19 @@ resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
   source_security_group_id = "${element(var.rpc_security_groups, count.index)}"
 }
 
+resource "aws_security_group_rule" "eximchain_node_rpc_lb" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
+  security_group_id = "${aws_security_group.eximchain_node.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  source_security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
+}
+
 resource "aws_security_group_rule" "eximchain_node_egress" {
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "egress"
