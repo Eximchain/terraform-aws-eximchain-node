@@ -239,7 +239,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
 }
 
 resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
-  count = "${length(var.rpc_security_groups)}"
+  count = "${var.num_rpc_security_groups}"
 
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"

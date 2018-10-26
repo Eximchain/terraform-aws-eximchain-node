@@ -83,6 +83,11 @@ variable "rpc_security_groups" {
   default     = []
 }
 
+variable "num_rpc_security_groups" {
+  description = "Number of security groups in the same region to allow access to the RPC port."
+  default     = 0
+}
+
 variable "eximchain_node_ami" {
   description = "ID of AMI to use for eximchain node. If not set, will retrieve the latest version from Eximchain."
   default     = ""
