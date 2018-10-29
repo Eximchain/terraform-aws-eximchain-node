@@ -4,6 +4,8 @@
 resource "aws_lb" "eximchain_node" {
   count = "${var.create_load_balancer ? 1 : 0}"
 
+  internal = "${var.use_internal_load_balancer}"
+
   subnets         = ["${aws_subnet.eximchain_node.*.id}"]
   security_groups = ["${aws_security_group.eximchain_load_balancer.id}"]
 }

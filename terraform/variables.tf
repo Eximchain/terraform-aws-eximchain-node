@@ -24,6 +24,11 @@ variable "create_load_balancer" {
   default     = true
 }
 
+variable "use_internal_load_balancer" {
+  description = "Whether to use an internal load balancer. Recommended if it only needs to be reachable from the same VPC."
+  default     = false
+}
+
 variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
   default     = ""
