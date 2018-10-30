@@ -226,7 +226,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc_self" {
 }
 
 resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
-  count = "${length(var.rpc_cidrs) == 0 ? 0 : 1}"
+  count = "${var.create_load_balancer ? 0 : length(var.rpc_cidrs) == 0 ? 0 : 1}"
 
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
@@ -239,7 +239,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
 }
 
 resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
-  count = "${var.num_rpc_security_groups}"
+  count = "${var.create_load_balancer ? 0 : var.num_rpc_security_groups}"
 
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
