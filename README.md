@@ -217,3 +217,11 @@ Instead, your Terraform state file has been partially updated with
 any resources that successfully completed. Please address the error
 above and apply again to incrementally change your infrastructure.
 ```
+
+# Architecture
+
+![Architecture Diagram](images/architecture.png "Architecture Diagram")
+
+This diagram shows the architecture of this infrastructure. It consists of a user specified number of nodes, each in their own autoscaling group. The nodes are all behind a load balancer that forwards RPC calls to nodes. This allows users to interact with the chain through RPC, assuming the user doesn't care which node executes the RPC call. The nodes sync with the main network by peering with the [bootnodes](https://github.com/Eximchain/eximchain-network-data/tree/master/main-network) specified on the [Eximchain Github](https://github.com/Eximchain).
+
+In this default architecture, each node runs a local Vault server, which needs to be unsealed independently after launch. The terraform module can be configured to use a remote vault server, however.
