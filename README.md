@@ -6,6 +6,7 @@ Table of Contents
    * [Quick Start Guide](#quick-start-guide)
       * [Prerequisites](#prerequisites)
       * [Supported Regions](#supported-regions)
+      * [Selecting A Network](#selecting-a-network)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
       * [Launch Network with Terraform](#launch-network-with-terraform)
@@ -13,6 +14,7 @@ Table of Contents
       * [Wait for processes](#wait-for-processes)
          * [Attach the Geth Console](#attach-the-geth-console)
          * [Destroy the Node](#destroy-the-node)
+   * [Architecture](#architecture)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
