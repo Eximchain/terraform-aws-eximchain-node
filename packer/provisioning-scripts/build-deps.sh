@@ -9,5 +9,3 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 # Allow non-interactive cloning of git repositories
 echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-# Use ssh for git repositories
-git config --global url."git@github.com:".insteadOf "https://github.com/"
