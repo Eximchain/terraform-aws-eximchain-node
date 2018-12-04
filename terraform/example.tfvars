@@ -1,5 +1,5 @@
 network_id                   = 513
-public_key_path              = "~/.ssh/quorum.pub"
+public_key_path              = "~/.ssh/eximchain-node.pub"
 aws_region                   = "us-east-1"
 availability_zone            = "us-east-1a"
 lb_extra_az                  = "us-east-1b"
