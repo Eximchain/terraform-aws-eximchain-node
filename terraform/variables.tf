@@ -6,14 +6,15 @@ variable "aws_region" {
   description = "AWS region to launch servers."
 }
 
-variable "cert_owner" {
-  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
+variable "cert_owner" {
+  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
+  default     = "$USER"
+}
+
 variable "availability_zones" {
   description = "AWS availability zones to distribute the nodes amongst. Must name at least two. Defaults to distributing nodes across AZs."
   default     = []
