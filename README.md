@@ -12,7 +12,7 @@ Table of Contents
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
       * [Wait for processes](#wait-for-processes)
-         * [Attach the Geth Console](#attach-the-geth-console)
+         * [Attach the Exim Console](#attach-the-exim-console)
          * [Destroy the Node](#destroy-the-node)
    * [Architecture](#architecture)
 
@@ -153,13 +153,13 @@ If any of these commands fail, wait a short time and try again. If waiting doesn
 
 Wait for processes to start
 
-One way to check is to inspect the log folder. If geth and constellation have started, we expect to find logs for `constellation` and `eximchain`, not just `init-eximchain`.
+One way to check is to inspect the log folder. If exim and constellation have started, we expect to find logs for `constellation` and `eximchain`, not just `init-eximchain`.
 
 ```sh
 $ ls /opt/quorum/log
 ```
 
-Another way is to check the supervisor config folder. if geth and constellation have started, we expect to find files `eximchain-supervisor.conf` and `constellation-supervisor.conf`.
+Another way is to check the supervisor config folder. if exim and constellation have started, we expect to find files `eximchain-supervisor.conf` and `constellation-supervisor.conf`.
 
 ```sh
 $ ls /etc/supervisor/conf.d
@@ -169,15 +169,15 @@ Finally, you can check for the running processes themselves.  Expect to find a r
 
 ```sh
 $ ps -aux | grep constellation-node
-$ ps -aux | grep geth
+$ ps -aux | grep exim
 ```
 
-### Attach the Geth Console
+### Attach the Exim Console
 
-Once the processes are all running, you can attach your console to the geth JavaScript console
+Once the processes are all running, you can attach your console to the exim JavaScript console
 
 ```sh
-$ geth attach
+$ exim attach
 ```
 
 You should be able to see your other nodes as peers. Connecting may take a few minutes.
