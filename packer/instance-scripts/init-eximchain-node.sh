@@ -16,7 +16,8 @@ function download_chain_metadata {
   local readonly DATADIR="main-network"
   curl https://raw.githubusercontent.com/Eximchain/eximchain-network-data/master/$DATADIR/quorum-genesis.json > /opt/quorum/private/quorum-genesis.json
   curl https://raw.githubusercontent.com/Eximchain/eximchain-network-data/master/$DATADIR/bootnodes.txt > /opt/quorum/info/bootnodes.txt
-  curl https://raw.githubusercontent.com/Eximchain/eximchain-network-data/master/$DATADIR/constellation-bootnodes.txt > /opt/quorum/info/constellation-bootnodes.txt
+  # TODO: Enable private transactions
+  #curl https://raw.githubusercontent.com/Eximchain/eximchain-network-data/master/$DATADIR/constellation-bootnodes.txt > /opt/quorum/info/constellation-bootnodes.txt
 }
 
 function generate_eximchain_supervisor_config {
@@ -30,7 +31,8 @@ function generate_eximchain_supervisor_config {
 
     local VERBOSITY=4
     local PW_FILE="/tmp/exim-pw"
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --privateconfigpath $CONSTELLATION_CONFIG"
+    # TODO: Add '--privateconfigpath $CONSTELLATION_CONFIG' to args after enabling private transactions
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
@@ -145,10 +147,11 @@ exim init /opt/quorum/private/quorum-genesis.json
 # Sleep to let constellation bootnodes start first
 sleep 30
 
+# TODO: Run constellation after enabling private transactions
 # Run Constellation
-sudo mv /opt/quorum/private/constellation-supervisor.conf /etc/supervisor/conf.d/
-sudo supervisorctl reread
-sudo supervisorctl update
+#sudo mv /opt/quorum/private/constellation-supervisor.conf /etc/supervisor/conf.d/
+#sudo supervisorctl reread
+#sudo supervisorctl update
 
 # Sleep to let constellation-node start
 sleep 5
