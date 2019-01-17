@@ -32,7 +32,7 @@ function generate_eximchain_supervisor_config {
     local VERBOSITY=4
     local PW_FILE="/tmp/exim-pw"
     # TODO: Add '--privateconfigpath $CONSTELLATION_CONFIG' to args after enabling private transactions
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcvhosts \"*\" --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
