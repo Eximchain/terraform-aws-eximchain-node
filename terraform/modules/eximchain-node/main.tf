@@ -40,10 +40,17 @@ module "cert_tool" {
 # ---------------------------------------------------------------------------------------------------------------------
 # NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_subnet" "eximchain_node" {
+  # At least two for the load balancer, otherwise one per node up to the number of AZs
+  count = "${max(2, min(var.node_count, length(var.availability_zones) == 0 ? length(data.aws_availability_zones.available.names) : length(var.availability_zones)))}"
+
   vpc_id                  = "${var.aws_vpc}"
-  availability_zone       = "${var.availability_zone}"
-  cidr_block              = "${var.base_subnet_cidr}"
+  availability_zone       = "${length(var.availability_zones) != 0 ? element(concat(var.availability_zones, list("")), count.index) : element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block              = "${cidrsubnet(cidrsubnet(var.base_subnet_cidr, 2, 0), 4, count.index)}"
   map_public_ip_on_launch = true
 }
 
@@ -219,7 +226,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc_self" {
 }
 
 resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
-  count = "${length(var.rpc_cidrs) == 0 ? 0 : 1}"
+  count = "${var.create_load_balancer ? 0 : length(var.rpc_cidrs) == 0 ? 0 : 1}"
 
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
@@ -232,7 +239,7 @@ resource "aws_security_group_rule" "eximchain_node_rpc_cidrs" {
 }
 
 resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
-  count = "${length(var.rpc_security_groups)}"
+  count = "${var.create_load_balancer ? 0 : var.num_rpc_security_groups}"
 
   security_group_id = "${aws_security_group.eximchain_node.id}"
   type              = "ingress"
@@ -242,6 +249,19 @@ resource "aws_security_group_rule" "eximchain_node_rpc_security_groups" {
   protocol  = "tcp"
 
   source_security_group_id = "${element(var.rpc_security_groups, count.index)}"
+}
+
+resource "aws_security_group_rule" "eximchain_node_rpc_lb" {
+  count = "${var.create_load_balancer ? 1 : 0}"
+
+  security_group_id = "${aws_security_group.eximchain_node.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  source_security_group_id = "${aws_security_group.eximchain_load_balancer.id}"
 }
 
 resource "aws_security_group_rule" "eximchain_node_egress" {
@@ -259,26 +279,32 @@ resource "aws_security_group_rule" "eximchain_node_egress" {
 # EXIMCHAIN NODE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "eximchain_node" {
-  name_prefix = "eximchain-node-net-${var.network_id}-"
+  count = "${var.node_count}"
 
-  launch_configuration = "${aws_launch_configuration.eximchain_node.name}"
+  name_prefix = "eximchain-node-${count.index}-net-${var.network_id}-"
+
+  launch_configuration = "${element(aws_launch_configuration.eximchain_node.*.name, count.index)}"
+
+  target_group_arns = ["${element(coalescelist(aws_lb_target_group.eximchain_node_rpc.*.arn, list("")), 0)}"]
 
   min_size         = 1
   max_size         = 1
   desired_capacity = 1
 
   health_check_grace_period = 300
-  health_check_type         = "ELB"
+  health_check_type         = "EC2"
 
-  vpc_zone_identifier = ["${aws_subnet.eximchain_node.id}"]
+  vpc_zone_identifier = ["${element(aws_subnet.eximchain_node.*.id, count.index)}"]
 }
 
 resource "aws_launch_configuration" "eximchain_node" {
-  name_prefix = "eximchain-node-net-${var.network_id}-"
+  count = "${var.node_count}"
+
+  name_prefix = "eximchain-node-${count.index}-net-${var.network_id}-"
 
   image_id      = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
   instance_type = "${var.eximchain_node_instance_type}"
-  user_data     = "${data.template_file.user_data_eximchain_node.rendered}"
+  user_data     = "${element(data.template_file.user_data_eximchain_node.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
 
@@ -291,6 +317,8 @@ resource "aws_launch_configuration" "eximchain_node" {
 }
 
 data "template_file" "user_data_eximchain_node" {
+  count = "${var.node_count}"
+
   template = "${file("${path.module}/user-data/user-data-eximchain-node.sh")}"
 
   vars {
@@ -309,6 +337,8 @@ data "template_file" "user_data_eximchain_node" {
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
+
+    node_index = "${count.index}"
   }
 }
 
@@ -323,8 +353,10 @@ data "aws_ami" "eximchain_node" {
 }
 
 data "aws_instance" "eximchain_node" {
+  count = "${var.node_count}"
+
   filter {
     name   = "tag:aws:autoscaling:groupName"
-    values = ["${aws_autoscaling_group.eximchain_node.name}"]
+    values = ["${element(aws_autoscaling_group.eximchain_node.*.name, count.index)}"]
   }
 }

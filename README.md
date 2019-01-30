@@ -6,13 +6,15 @@ Table of Contents
    * [Quick Start Guide](#quick-start-guide)
       * [Prerequisites](#prerequisites)
       * [Supported Regions](#supported-regions)
+      * [Selecting A Network](#selecting-a-network)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
       * [Wait for processes](#wait-for-processes)
-         * [Attach the Geth Console](#attach-the-geth-console)
+         * [Attach the Exim Console](#attach-the-exim-console)
          * [Destroy the Node](#destroy-the-node)
+   * [Architecture](#architecture)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -151,13 +153,13 @@ If any of these commands fail, wait a short time and try again. If waiting doesn
 
 Wait for processes to start
 
-One way to check is to inspect the log folder. If geth and constellation have started, we expect to find logs for `constellation` and `eximchain`, not just `init-eximchain`.
+One way to check is to inspect the log folder. If exim and constellation have started, we expect to find logs for `constellation` and `eximchain`, not just `init-eximchain`.
 
 ```sh
 $ ls /opt/quorum/log
 ```
 
-Another way is to check the supervisor config folder. if geth and constellation have started, we expect to find files `eximchain-supervisor.conf` and `constellation-supervisor.conf`.
+Another way is to check the supervisor config folder. if exim and constellation have started, we expect to find files `eximchain-supervisor.conf` and `constellation-supervisor.conf`.
 
 ```sh
 $ ls /etc/supervisor/conf.d
@@ -167,15 +169,15 @@ Finally, you can check for the running processes themselves.  Expect to find a r
 
 ```sh
 $ ps -aux | grep constellation-node
-$ ps -aux | grep geth
+$ ps -aux | grep exim
 ```
 
-### Attach the Geth Console
+### Attach the Exim Console
 
-Once the processes are all running, you can attach your console to the geth JavaScript console
+Once the processes are all running, you can attach your console to the exim JavaScript console
 
 ```sh
-$ geth attach
+$ exim attach
 ```
 
 You should be able to see your other nodes as peers. Connecting may take a few minutes.
@@ -217,3 +219,11 @@ Instead, your Terraform state file has been partially updated with
 any resources that successfully completed. Please address the error
 above and apply again to incrementally change your infrastructure.
 ```
+
+# Architecture
+
+![Architecture Diagram](images/architecture.png "Architecture Diagram")
+
+This diagram shows the architecture of this infrastructure. It consists of a user specified number of nodes, each in their own autoscaling group. The nodes are all behind a load balancer that forwards RPC calls to nodes. This allows users to interact with the chain through RPC, assuming the user doesn't care which node executes the RPC call. The nodes sync with the main network by peering with the [bootnodes](https://github.com/Eximchain/eximchain-network-data/tree/master/main-network) specified on the [Eximchain Github](https://github.com/Eximchain).
+
+In this default architecture, each node runs a local Vault server, which needs to be unsealed independently after launch. The terraform module can be configured to use a remote vault server, however.
