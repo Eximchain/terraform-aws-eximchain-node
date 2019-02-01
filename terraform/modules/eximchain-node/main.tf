@@ -302,7 +302,7 @@ resource "aws_launch_configuration" "eximchain_node" {
 
   name_prefix = "eximchain-node-${count.index}-net-${var.network_id}-"
 
-  image_id      = "${var.eximchain_node_ami == "" ? data.aws_ami.eximchain_node.id : var.eximchain_node_ami}"
+  image_id      = "${var.eximchain_node_ami == "" ? element(coalescelist(data.aws_ami.eximchain_node.*.id, list("")), 0) : var.eximchain_node_ami}"
   instance_type = "${var.eximchain_node_instance_type}"
   user_data     = "${element(data.template_file.user_data_eximchain_node.*.rendered, count.index)}"
 
@@ -343,6 +343,8 @@ data "template_file" "user_data_eximchain_node" {
 }
 
 data "aws_ami" "eximchain_node" {
+  count = "${var.eximchain_node_ami == "" ? 1 : 0}"
+
   most_recent = true
   owners      = ["037794263736"]
 
