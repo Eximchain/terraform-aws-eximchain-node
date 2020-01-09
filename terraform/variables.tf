@@ -114,3 +114,4 @@ variable "consul_cluster_tag_value" {
   description = "consul tag value"
   default     = "auto-join"
 }
+
