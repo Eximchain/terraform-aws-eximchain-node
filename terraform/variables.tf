@@ -115,3 +115,7 @@ variable "consul_cluster_tag_value" {
   default     = "auto-join"
 }
 
+variable "archive_mode" {
+  description = "Whether the nodes should be run in archive mode to retain historical state"
+  default     = false
+}

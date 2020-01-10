@@ -352,6 +352,8 @@ data "template_file" "user_data_eximchain_node" {
     aws_region = var.aws_region
     network_id = var.network_id
 
+    archive_mode = var.archive_mode
+
     s3_bucket_name = aws_s3_bucket.vault_storage.id
     iam_role_name  = aws_iam_role.eximchain_node.name
 

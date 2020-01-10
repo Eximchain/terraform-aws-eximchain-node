@@ -43,6 +43,7 @@ module "eximchain_node" {
   aws_region                   = var.aws_region
   availability_zones           = var.availability_zones
   cert_owner                   = var.cert_owner
+  archive_mode                 = var.archive_mode
   create_load_balancer         = var.create_load_balancer
   use_internal_load_balancer   = var.use_internal_load_balancer
   node_count                   = var.node_count

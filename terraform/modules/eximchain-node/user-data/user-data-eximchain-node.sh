@@ -46,6 +46,7 @@ function populate_data_files {
   echo "${vault_private_key}" | sudo tee /opt/vault/tls/vault.key.pem
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "${node_index}" | sudo tee /opt/quorum/info/node-index.txt
+  echo "${archive_mode}" | sudo tee /opt/quorum/info/archive-mode.txt
 }
 
 function set_vault_tls_permissions {
