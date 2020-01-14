@@ -6,7 +6,7 @@ terraform {
 # PROVIDERS
 # ---------------------------------------------------------------------------------------------------------------------
 provider "aws" {
-  version = "~> 2.43.0"
+  version = "~> 2.44"
 
   region = var.aws_region
 }
@@ -163,10 +163,10 @@ resource "aws_iam_role_policy_attachment" "allow_s3_bucket" {
   policy_arn = aws_iam_policy.allow_s3_bucket.arn
 }
 
-# TODO: Terraform 0.12 upgrade to squelch warning
 module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
+  source = "../consul-iam-policies"
 
+  aws_region  = var.aws_region
   iam_role_id = aws_iam_role.eximchain_node.name
 }
 
